@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- tentative -->
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-controls</artifactId>
+    <version>21.0.2</version>
+</dependency>
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-fxml</artifactId>
+    <version>21.0.2</version>
+</dependency>
+<!--  -->
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.view.LoginViewController">
+   <center>
+      <VBox alignment="CENTER" spacing="20.0">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <Label text="Photos Application">
+            <font>
+               <Font name="System Bold" size="24.0" />
+            </font>
+         </Label>
+         <VBox alignment="CENTER_LEFT" spacing="10.0">
+            <Label text="Username:" />
+            <TextField fx:id="usernameField" promptText="Enter username" />
+            <Label text="Password (optional):" />
+            <PasswordField fx:id="passwordField" promptText="Enter password" />
+         </VBox>
+         <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLogin" text="Login" />
+         <Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
+      </VBox>
+   </center>
+</BorderPane>
