@@ -203,10 +203,21 @@ public class UserDashboardViewController {
      * Handles search button action
      */
     @FXML
-    private void handleSearch() {
-        // TODO: Implement search functionality
-        showError("Search functionality not yet implemented");
+private void handleSearch() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/SearchView.fxml"));
+        Parent root = loader.load();
+        
+        SearchViewController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+        controller.setCurrentUser(currentUser);
+        
+        primaryStage.setScene(new Scene(root));
+    } catch (IOException e) {
+        showError("Error loading search view: " + e.getMessage());
+        e.printStackTrace();
     }
+}
 
     /**
      * Handles logout button action
