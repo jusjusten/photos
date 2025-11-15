@@ -180,4 +180,28 @@ public class AlbumViewController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+private void handleViewPhoto() {
+    if (selectedPhoto == null) {
+        showError("Please select a photo to view");
+        return;
+    }
+    
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/PhotoDisplayView.fxml"));
+        Parent root = loader.load();
+        
+        PhotoDisplayViewController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+        controller.setUserAlbumAndPhoto(currentUser, currentAlbum, selectedPhoto);
+        
+        primaryStage.setScene(new Scene(root));
+    } catch (IOException e) {
+        showError("Error loading photo view: " + e.getMessage());
+        e.printStackTrace();
+    }
 }
+
+}
+
