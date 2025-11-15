@@ -172,16 +172,29 @@ public class UserDashboardViewController {
      */
     @FXML
     private void handleOpenAlbum() {
-        String selectedAlbum = albumsListView.getSelectionModel().getSelectedItem();
-        
-        if (selectedAlbum == null) {
-            showError("Please select an album to open");
-            return;
-        }
-        
-        // TODO: Implement album view opening
-        showError("Album view not yet implemented");
+    String selectedAlbumName = albumsListView.getSelectionModel().getSelectedItem();
+    
+    if (selectedAlbumName == null) {
+        showError("Please select an album to open");
+        return;
     }
+    
+    Album selectedAlbum = currentUser.getAlbum(selectedAlbumName);
+    
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/AlbumView.fxml"));
+        Parent root = loader.load();
+        
+        AlbumViewController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+        controller.setUserAndAlbum(currentUser, selectedAlbum);
+        
+        primaryStage.setScene(new Scene(root));
+    } catch (Exception e) {
+        showError("Error loading album view: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 
     /**
      * Handles search button action
