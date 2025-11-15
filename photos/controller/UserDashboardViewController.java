@@ -13,6 +13,9 @@ import photos.model.Album;
 import photos.view.SceneManager;
 import javafx.stage.Stage;
 import java.io.IOException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 /**
  * Controller for the user dashboard view
@@ -248,3 +251,4 @@ public class UserDashboardViewController {
         System.err.println("Error: " + message);
     }
 }
+
