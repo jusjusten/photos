@@ -258,5 +258,19 @@ public boolean movePhoto(Photo photo, String fromAlbum, String toAlbum) {
     }
     return false;
 }
+
+public boolean createAlbumFromSearch(String albumName, List<Photo> photos) {
+    if (getAlbum(albumName) != null) {
+        return false;
+    }
+    
+    Album newAlbum = new Album(albumName);
+    for (Photo photo : photos) {
+        newAlbum.addPhoto(photo);
+    }
+    albums.add(newAlbum);
+    return true;
+}
+    
 }
 
