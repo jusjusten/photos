@@ -15,6 +15,7 @@ public class DataManager {
     
     private DataManager() {
         initializeDataDirectories();
+        users = new ArrayList<>(); // Initialize users list first
         loadAdmin();
         loadAllUsers(); // Load all users on startup
     }
@@ -188,18 +189,17 @@ public class DataManager {
             return true;
         }
         
-        // Check if user exists
-        User user = getUserByUsername(username);
-        if (user == null && !username.equalsIgnoreCase(Admin.getStockUsername())) {
+        // Check if user exists in admin list
+        if (!admin.userExists(username)) {
             return false;
         }
         
-        if (user == null && username.equalsIgnoreCase(Admin.getStockUsername())) {
-            // Stock user should exist, but if not, create it
-            user = new User(Admin.getStockUsername());
-            user.createAlbum("stock");
+        // Load user from disk
+        User user = User.loadUserData(username);
+        if (user == null) {
+            // User exists in admin list but no data file - create new
+            user = new User(username);
             user.saveUserData();
-            users.add(user);
         }
         
         currentUser = user;
@@ -231,13 +231,4 @@ public class DataManager {
         }
     }
     
-    private boolean isImageFile(File file) {
-        if (!file.isFile()) {
-            return false;
-        }
-        String name = file.getName().toLowerCase();
-        return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
-               name.endsWith(".png") || name.endsWith(".gif") || 
-               name.endsWith(".bmp");
-    }
 }

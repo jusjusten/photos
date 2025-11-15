@@ -6,6 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import photos.model.DataManager;
+import photos.controller.LoginViewController;
+import photos.controller.AdminViewController;
+import photos.controller.UserDashboardViewController;
 
 /**
  * Main application class for Photos
@@ -30,9 +33,8 @@ public class Photos extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Photos Application");
         
-        // Initialize data manager
+        // Initialize data manager (singleton)
         dataManager = DataManager.getInstance();
-        dataManager.loadData();
         
         // Show login screen
         showLoginView();
@@ -48,7 +50,6 @@ public class Photos extends Application {
             
             LoginViewController controller = loader.getController();
             controller.setPrimaryStage(primaryStage);
-            controller.setMainApp(this);
             
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -70,7 +71,6 @@ public class Photos extends Application {
             
             AdminViewController controller = loader.getController();
             controller.setPrimaryStage(primaryStage);
-            controller.setMainApp(this);
             
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -92,8 +92,9 @@ public class Photos extends Application {
             
             UserDashboardViewController controller = loader.getController();
             controller.setPrimaryStage(primaryStage);
-            controller.setMainApp(this);
-            controller.setCurrentUser(dataManager.getUser(username));
+            
+            // Current user should already be loaded via DataManager.login()
+            controller.setCurrentUser(dataManager.getCurrentUser());
             
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -111,7 +112,8 @@ public class Photos extends Application {
     @Override
     public void stop() {
         if (dataManager != null) {
-            dataManager.saveData();
+            dataManager.logout();
+            dataManager.saveAdmin();
         }
     }
 

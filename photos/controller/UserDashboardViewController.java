@@ -1,4 +1,4 @@
-package photos.view;
+package photos.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import photos.model.DataManager;
 import photos.model.User;
 import photos.model.Album;
+import photos.view.SceneManager;
 import javafx.stage.Stage;
 import java.io.IOException;
 

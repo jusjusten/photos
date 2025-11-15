@@ -2,6 +2,7 @@ package photos.util;
 
 import photos.model.Photo;
 import javafx.scene.image.Image;
+import java.io.File;
 
 /**
  * Helper class for JavaFX image operations
