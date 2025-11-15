@@ -1,0 +1,6 @@
+run with 
+java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
+
+right now the thing implemented is the dashboard, login, logout, rename album
+
+we gotta have a way to insert into album, and look at pictures

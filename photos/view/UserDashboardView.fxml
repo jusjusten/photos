@@ -10,20 +10,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- tentative -->
-<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-controls</artifactId>
-    <version>21.0.2</version>
-</dependency>
-<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-fxml</artifactId>
-    <version>21.0.2</version>
-</dependency>
-<!--  -->
-
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.view.UserDashboardViewController">
+<!-- FXML for user dashboard (JavaFX 21.0.9) -->
+<BorderPane xmlns="http://javafx.com/javafx/21.0.9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.controller.UserDashboardViewController">
    <top>
       <VBox spacing="10.0">
          <padding>
