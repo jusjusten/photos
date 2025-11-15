@@ -4,3 +4,5 @@ java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,jav
 right now the thing implemented is the dashboard, login, logout, rename album
 
 we gotta have a way to insert into album, and look at pictures
+
+Finished Insert and looking at pictures in the album
