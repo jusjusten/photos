@@ -15,13 +15,15 @@
          </Label>
          <HBox spacing="10">
             <Button text="Add Photo" onAction="#handleAddPhoto"/>
+            <Button text="Remove Photo" onAction="#handleRemovePhoto"/>
             <Button text="Back to Albums" onAction="#handleBack"/>
          </HBox>
       </VBox>
    </top>
    <center>
-      <ListView fx:id="photosListView" VBox.vgrow="ALWAYS">
+      <ScrollPane fitToWidth="true" fitToHeight="true">
          <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-      </ListView>
+         <TilePane fx:id="photoTilePane" hgap="15" vgap="15" prefColumns="4"/>
+      </ScrollPane>
    </center>
 </BorderPane>
