@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="photos.controller.SearchViewController">
+   <top>
+      <VBox spacing="15">
+         <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+         
+         <Label text="Search Photos">
+            <font><Font name="System Bold" size="20"/></font>
+         </Label>
+         
+         <VBox spacing="10">
+            <Label text="Search Type:" style="-fx-font-weight: bold;"/>
+            
+            <RadioButton fx:id="dateRangeRadio" text="Search by Date Range">
+               <toggleGroup>
+                  <ToggleGroup fx:id="searchTypeGroup"/>
+               </toggleGroup>
+            </RadioButton>
+            
+            <RadioButton fx:id="singleTagRadio" text="Search by Single Tag" toggleGroup="$searchTypeGroup"/>
+            
+            <RadioButton fx:id="twoTagsAndRadio" text="Search by Two Tags (AND - both required)" toggleGroup="$searchTypeGroup"/>
+            
+            <RadioButton fx:id="twoTagsOrRadio" text="Search by Two Tags (OR - either one)" toggleGroup="$searchTypeGroup"/>
+         </VBox>
+         
+         <!-- Date Search Fields -->
+         <VBox fx:id="dateSearchBox" spacing="10" style="-fx-border-color: lightgray; -fx-border-width: 1; -fx-padding: 10;">
+            <Label text="Date Range Search:" style="-fx-font-weight: bold;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <Label text="Start Date:"/>
+               <DatePicker fx:id="startDatePicker" promptText="Select start date"/>
+               <Label text="End Date:"/>
+               <DatePicker fx:id="endDatePicker" promptText="Select end date"/>
+            </HBox>
+         </VBox>
+         
+         <!-- Tag Search Fields -->
+         <VBox fx:id="tagSearchBox" spacing="10" style="-fx-border-color: lightgray; -fx-border-width: 1; -fx-padding: 10;" visible="false" managed="false">
+            <Label text="Tag Search:" style="-fx-font-weight: bold;"/>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <Label text="Tag 1 Name:"/>
+               <TextField fx:id="tagName1Field" promptText="e.g., location" prefWidth="150"/>
+               <Label text="Value:"/>
+               <TextField fx:id="tagValue1Field" promptText="e.g., New Brunswick" prefWidth="150"/>
+            </HBox>
+            
+            <VBox fx:id="tag2Box" spacing="10" visible="false" managed="false">
+               <Separator/>
+               <HBox spacing="10" alignment="CENTER_LEFT">
+                  <Label text="Tag 2 Name:"/>
+                  <TextField fx:id="tagName2Field" promptText="e.g., person" prefWidth="150"/>
+                  <Label text="Value:"/>
+                  <TextField fx:id="tagValue2Field" promptText="e.g., Alice" prefWidth="150"/>
+               </HBox>
+            </VBox>
+         </VBox>
+         
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button fx:id="searchButton" text="Search" onAction="#handleSearch" style="-fx-font-size: 14px;"/>
+            <Button fx:id="backButton" text="Back to Dashboard" onAction="#handleBack"/>
+         </HBox>
+      </VBox>
+   </top>
+   
+   <center>
+      <VBox spacing="10">
+         <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+         
+         <Label fx:id="resultsLabel" text="Search results will appear here">
+            <font><Font name="System Bold" size="14"/></font>
+         </Label>
+         
+         <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+            <TilePane fx:id="resultsPane" hgap="10" vgap="10" prefColumns="5"/>
+         </ScrollPane>
+      </VBox>
+   </center>
+   
+   <bottom>
+      <VBox spacing="10">
+         <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+         
+         <Separator/>
+         
+         <Label text="Create Album from Results:" style="-fx-font-weight: bold;"/>
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="newAlbumNameField" promptText="Enter new album name" prefWidth="200"/>
+            <Button fx:id="createAlbumButton" text="Create Album" onAction="#handleCreateAlbumFromResults" disable="true"/>
+         </HBox>
+      </VBox>
+   </bottom>
+</BorderPane>
