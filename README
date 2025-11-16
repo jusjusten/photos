@@ -11,3 +11,21 @@ Get-ChildItem -Path .\out -Recurse -Include *.java -ErrorAction SilentlyContinue
 =======
 Finished Insert and looking at pictures in the album
 >>>>>>> 754164b8e1b4814e38f126534d500e460c7f6320
+
+------Compile ----------
+Set-Location "C:\Users\Ginod\OneDrive\Desktop\Soft_meth\photos"
+Remove-Item -Recurse -Force .\out -ErrorAction SilentlyContinue
+mkdir -Force .\out
+javac -d out --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+
+-----copy resources-----------
+Remove-Item -Recurse -Force .\out\photos\view -ErrorAction SilentlyContinue
+mkdir -Force .\out\photos\view
+Copy-Item -Path .\photos\view\*.fxml -Destination .\out\photos\view -Force
+if (Test-Path .\data) { Remove-Item -Recurse -Force .\out\data -ErrorAction SilentlyContinue; Copy-Item -Path .\data -Destination .\out\data -Recurse -Force }
+
+------Run -----------
+java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
+
+-------or just ------
+.\build.ps1
