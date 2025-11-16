@@ -3,23 +3,66 @@ package photos.model;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Singleton class that manages all data persistence and user sessions.
+ * Handles loading and saving of user data, admin data, and manages the current logged-in user.
+ * Ensures data directories exist and handles serialization/deserialization of all data.
+ * 
+ * @author Keegan Tu
+ */
 public class DataManager {
+    /**
+     * Directory path for storing all application data
+     */
     private static final String DATA_DIR = "data";
+    
+    /**
+     * Directory path for storing user-specific data files
+     */
     private static final String USERS_DIR = DATA_DIR + "/users";
+    
+    /**
+     * File path for storing admin configuration data
+     */
     private static final String ADMIN_FILE = DATA_DIR + "/admin.dat";
     
+    /**
+     * Singleton instance of DataManager
+     */
     private static DataManager instance;
-    private Admin admin;
-    private User currentUser;
-    private List<User> users; // Added to track all users
     
+    /**
+     * Admin object managing user accounts
+     */
+    private Admin admin;
+    
+    /**
+     * Currently logged-in user (null if admin is logged in)
+     */
+    private User currentUser;
+    
+    /**
+     * List of all users in the system
+     */
+    private List<User> users;
+    
+    /**
+     * Private constructor to enforce singleton pattern.
+     * Initializes data directories, loads admin data, and loads all users.
+     */
     private DataManager() {
         initializeDataDirectories();
-        users = new ArrayList<>(); // Initialize users list first
+        users = new ArrayList<>();
         loadAdmin();
-        loadAllUsers(); // Load all users on startup
+        loadAllUsers();
     }
     
+    /**
+     * Gets the singleton instance of DataManager.
+     * Creates a new instance if one doesn't exist.
+     * 
+     * @return the singleton DataManager instance
+     */
     public static DataManager getInstance() {
         if (instance == null) {
             instance = new DataManager();
@@ -27,6 +70,10 @@ public class DataManager {
         return instance;
     }
     
+    /**
+     * Initializes the data directory structure.
+     * Creates data and users directories if they don't exist.
+     */
     private void initializeDataDirectories() {
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
@@ -39,6 +86,10 @@ public class DataManager {
         }
     }
     
+    /**
+     * Loads admin data from disk.
+     * If no admin file exists, creates a new admin and initializes the stock user.
+     */
     private void loadAdmin() {
         File adminFile = new File(ADMIN_FILE);
         
@@ -59,7 +110,9 @@ public class DataManager {
     }
     
     /**
-     * Load all users from disk
+     * Loads all users from disk.
+     * Reads all .dat files in the users directory and deserializes them.
+     * Ensures admin user exists in the list.
      */
     private void loadAllUsers() {
         users = new ArrayList<>();
@@ -87,7 +140,10 @@ public class DataManager {
     }
     
     /**
-     * Get user by username (added for controllers)
+     * Gets a user by their username.
+     * 
+     * @param username the username to search for
+     * @return the User object if found, null otherwise
      */
     public User getUserByUsername(String username) {
         for (User user : users) {
@@ -99,24 +155,33 @@ public class DataManager {
     }
     
     /**
-     * Get all users (added for controllers)
+     * Gets a list of all users in the system.
+     * 
+     * @return a copy of the users list
      */
     public List<User> getUsers() {
         return new ArrayList<>(users);
     }
     
     /**
-     * Add a new user (added for controllers)
+     * Adds a new user to the system.
+     * Saves the user data immediately if the user doesn't already exist.
+     * 
+     * @param user the user to add
      */
     public void addUser(User user) {
         if (user != null && getUserByUsername(user.getUsername()) == null) {
             users.add(user);
-            user.saveUserData(); // Save immediately
+            user.saveUserData();
         }
     }
     
     /**
-     * Delete user by username (added for controllers)
+     * Deletes a user by username.
+     * Removes the user from the list and deletes their data file.
+     * Cannot delete the admin user.
+     * 
+     * @param username the username of the user to delete
      */
     public void deleteUser(String username) {
         if (username.equals("admin")) {
@@ -136,7 +201,8 @@ public class DataManager {
     }
     
     /**
-     * Save all users data (added for controllers)
+     * Saves all users' data to disk.
+     * Iterates through all users and saves each one.
      */
     public void saveUsers() {
         for (User user : users) {
@@ -145,13 +211,18 @@ public class DataManager {
     }
     
     /**
-     * Save all data (added for controllers - alias for saveUsers)
+     * Saves all data including users and admin.
+     * Convenience method that calls saveUsers() and saveAdmin().
      */
     public void saveData() {
         saveUsers();
         saveAdmin();
     }
     
+    /**
+     * Saves admin data to disk.
+     * Serializes the admin object to the admin data file.
+     */
     public void saveAdmin() {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(ADMIN_FILE))) {
@@ -161,6 +232,11 @@ public class DataManager {
         }
     }
     
+    /**
+     * Initializes the stock user with pre-loaded photos.
+     * Creates a stock user with a stock album for testing purposes.
+     * This user is created on first run of the application.
+     */
     private void initializeStockUser() {
         User stockUser = new User(Admin.getStockUsername());
         
@@ -179,9 +255,17 @@ public class DataManager {
         // }
         
         stockUser.saveUserData();
-        users.add(stockUser); // Add to users list
+        users.add(stockUser);
     }
     
+    /**
+     * Logs in a user by username.
+     * Sets the current user if login is successful.
+     * Admin login sets currentUser to null.
+     * 
+     * @param username the username to log in
+     * @return true if login successful, false if user doesn't exist
+     */
     public boolean login(String username) {
         // Admin login
         if (username.equalsIgnoreCase(Admin.getAdminUsername())) {
@@ -206,6 +290,10 @@ public class DataManager {
         return true;
     }
     
+    /**
+     * Logs out the current user.
+     * Saves the current user's data before clearing the session.
+     */
     public void logout() {
         if (currentUser != null) {
             currentUser.saveUserData();
@@ -213,22 +301,41 @@ public class DataManager {
         }
     }
     
+    /**
+     * Checks if admin is currently logged in.
+     * Admin is logged in when currentUser is null.
+     * 
+     * @return true if admin is logged in, false otherwise
+     */
     public boolean isAdminLoggedIn() {
-        return currentUser == null; // Admin has no User object
+        return currentUser == null;
     }
     
+    /**
+     * Gets the currently logged-in user.
+     * 
+     * @return the current User object, or null if admin is logged in
+     */
     public User getCurrentUser() {
         return currentUser;
     }
     
+    /**
+     * Gets the admin object.
+     * 
+     * @return the Admin instance
+     */
     public Admin getAdmin() {
         return admin;
     }
     
+    /**
+     * Saves the current user's data to disk.
+     * Does nothing if no user is logged in or if admin is logged in.
+     */
     public void saveCurrentUser() {
         if (currentUser != null) {
             currentUser.saveUserData();
         }
     }
-    
 }
