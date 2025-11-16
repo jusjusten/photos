@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="photos.controller.PhotoDisplayViewController">
+   <top>
+      <VBox spacing="10">
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="← Previous" onAction="#handlePrevious"/>
+            <Button text="Next →" onAction="#handleNext"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Back to Album" onAction="#handleBack"/>
+         </HBox>
+      </VBox>
+   </top>
+   
+   <center>
+      <VBox spacing="15" alignment="TOP_CENTER">
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+         
+         <!-- Photo Display -->
+         <ImageView fx:id="photoImageView" preserveRatio="true" fitWidth="600" fitHeight="400"/>
+         
+         <!-- Photo Info -->
+         <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="photoNameLabel" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+            <Label fx:id="photoDateLabel" style="-fx-font-size: 12;"/>
+         </VBox>
+      </VBox>
+   </center>
+   
+   <right>
+      <VBox spacing="15" prefWidth="250">
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+         
+         <!-- Caption Section -->
+         <VBox spacing="5">
+            <Label text="Caption:" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="captionArea" prefRowCount="3" wrapText="true"/>
+            <Button text="Save Caption" onAction="#handleSaveCaption"/>
+         </VBox>
+         
+         <Separator/>
+         
+         <!-- Tags Section -->
+         <VBox spacing="5">
+            <Label text="Tags:" style="-fx-font-weight: bold;"/>
+            <ListView fx:id="tagsListView" prefHeight="150"/>
+            
+            <HBox spacing="5">
+               <TextField fx:id="tagNameField" promptText="Tag name" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <HBox spacing="5">
+               <TextField fx:id="tagValueField" promptText="Tag value" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <HBox spacing="5">
+               <Button text="Add Tag" onAction="#handleAddTag" HBox.hgrow="ALWAYS"/>
+               <Button text="Remove Tag" onAction="#handleRemoveTag" HBox.hgrow="ALWAYS"/>
+            </HBox>
+         </VBox>
+         
+         <Separator/>
+         
+         <!-- Copy/Move Section -->
+         <VBox spacing="5">
+            <Label text="Copy/Move Photo:" style="-fx-font-weight: bold;"/>
+            <ComboBox fx:id="albumComboBox" promptText="Select album" prefWidth="200"/>
+            <HBox spacing="5">
+               <Button text="Copy" onAction="#handleCopyPhoto" HBox.hgrow="ALWAYS"/>
+               <Button text="Move" onAction="#handleMovePhoto" HBox.hgrow="ALWAYS"/>
+            </HBox>
+         </VBox>
+      </VBox>
+   </right>
+</BorderPane>

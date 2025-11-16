@@ -236,4 +236,41 @@ public class User implements Serializable {
             return null;
         }
     }
+
+    public boolean copyPhoto(Photo photo, String fromAlbum, String toAlbum) {
+    Album sourceAlbum = getAlbum(fromAlbum);
+    Album destAlbum = getAlbum(toAlbum);
+    
+    if (sourceAlbum == null || destAlbum == null) {
+        return false;
+    }
+    
+    if (!sourceAlbum.getPhotos().contains(photo)) {
+        return false;
+    }
+    
+    return destAlbum.addPhoto(photo);
 }
+
+public boolean movePhoto(Photo photo, String fromAlbum, String toAlbum) {
+    if (copyPhoto(photo, fromAlbum, toAlbum)) {
+        return removePhotoFromAlbum(photo, fromAlbum);
+    }
+    return false;
+}
+
+public boolean createAlbumFromSearch(String albumName, List<Photo> photos) {
+    if (getAlbum(albumName) != null) {
+        return false;
+    }
+    
+    Album newAlbum = new Album(albumName);
+    for (Photo photo : photos) {
+        newAlbum.addPhoto(photo);
+    }
+    albums.add(newAlbum);
+    return true;
+}
+    
+}
+

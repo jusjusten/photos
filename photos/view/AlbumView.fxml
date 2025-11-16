@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="photos.controller.AlbumViewController">
+   <top>
+      <VBox spacing="10">
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+         <Label fx:id="albumTitleLabel" text="Album Name">
+            <font><Font name="System Bold" size="20"/></font>
+         </Label>
+         <HBox spacing="10">
+            <Button text="Add Photo" onAction="#handleAddPhoto"/>
+            <Button text="Remove Photo" onAction="#handleRemovePhoto"/>
+            <Button text="View Photo" onAction="#handleViewPhoto"/>
+            <Button text="Back to Albums" onAction="#handleBack"/>
+         </HBox>
+      </VBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" fitToHeight="true">
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+         <TilePane fx:id="photoTilePane" hgap="15" vgap="15" prefColumns="4"/>
+      </ScrollPane>
+   </center>
+</BorderPane>

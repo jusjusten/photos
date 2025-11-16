@@ -5,5 +5,9 @@ right now the thing implemented is the dashboard, login, logout, rename album
 
 we gotta have a way to insert into album, and look at pictures
 
+<<<<<<< HEAD
 
 Get-ChildItem -Path .\out -Recurse -Include *.java -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force .\out\photos\view -ErrorAction SilentlyContinue; mkdir -Force .\out\photos\view; Copy-Item -Path .\photos\view\*.fxml -Destination .\out\photos\view -Force; javac -d out --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName }); if ($LASTEXITCODE -ne 0) { Write-Host "Compilation failed with exit code $LASTEXITCODE"; exit $LASTEXITCODE }; java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
+=======
+Finished Insert and looking at pictures in the album
+>>>>>>> 754164b8e1b4814e38f126534d500e460c7f6320
