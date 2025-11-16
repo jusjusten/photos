@@ -16,35 +16,86 @@ import javafx.scene.Scene;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Controller for the album view.
+ * Manages the display and interaction with photos within a specific album.
+ * Allows users to add, remove, and view photos in the album.
+ * 
+ * @author Keegan Tu
+ */
 public class AlbumViewController {
 
+    /**
+     * Label displaying the album title and photo count
+     */
     @FXML
     private Label albumTitleLabel;
     
+    /**
+     * Tile pane for displaying photo thumbnails in a grid layout
+     */
     @FXML
     private TilePane photoTilePane;
     
+    /**
+     * The primary stage for scene transitions
+     */
     private Stage primaryStage;
+    
+    /**
+     * The currently logged-in user
+     */
     private User currentUser;
+    
+    /**
+     * The album currently being displayed
+     */
     private Album currentAlbum;
+    
+    /**
+     * Data manager instance for saving user data
+     */
     private DataManager dataManager;
+    
+    /**
+     * The currently selected photo (for removal or viewing)
+     */
     private Photo selectedPhoto;
 
+    /**
+     * Initializes the controller.
+     * Sets up the data manager instance.
+     */
     @FXML
     public void initialize() {
         dataManager = DataManager.getInstance();
     }
 
+    /**
+     * Sets the primary stage for this controller.
+     * 
+     * @param primaryStage the primary stage for scene transitions
+     */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
+    /**
+     * Sets the current user and album, then updates the display.
+     * 
+     * @param user the user viewing the album
+     * @param album the album to display
+     */
     public void setUserAndAlbum(User user, Album album) {
         this.currentUser = user;
         this.currentAlbum = album;
         updateUI();
     }
 
+    /**
+     * Updates the UI with current album information.
+     * Displays the album name, photo count, and refreshes the photo grid.
+     */
     private void updateUI() {
         if (currentAlbum != null) {
             albumTitleLabel.setText(currentAlbum.getName() + " (" + 
@@ -53,6 +104,9 @@ public class AlbumViewController {
         }
     }
 
+    /**
+     * Refreshes the photo display by clearing and reloading all thumbnails.
+     */
     private void refreshPhotosDisplay() {
         photoTilePane.getChildren().clear();
         
@@ -61,6 +115,12 @@ public class AlbumViewController {
         }
     }
 
+    /**
+     * Adds a photo thumbnail to the tile pane.
+     * Creates a clickable thumbnail with the photo image and filename.
+     * 
+     * @param photo the photo to add to the display
+     */
     private void addPhotoThumbnail(Photo photo) {
         try {
             // Create container for photo
@@ -98,6 +158,10 @@ public class AlbumViewController {
         }
     }
 
+    /**
+     * Handles the add photo button action.
+     * Opens a file chooser dialog to select an image file and adds it to the album.
+     */
     @FXML
     private void handleAddPhoto() {
         FileChooser fileChooser = new FileChooser();
@@ -123,6 +187,10 @@ public class AlbumViewController {
         }
     }
 
+    /**
+     * Handles the remove photo button action.
+     * Removes the currently selected photo from the album after confirmation.
+     */
     @FXML
     private void handleRemovePhoto() {
         if (selectedPhoto == null) {
@@ -151,6 +219,36 @@ public class AlbumViewController {
         });
     }
 
+    /**
+     * Handles the view photo button action.
+     * Opens the photo display view for the currently selected photo.
+     */
+    @FXML
+    private void handleViewPhoto() {
+        if (selectedPhoto == null) {
+            showError("Please select a photo to view");
+            return;
+        }
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/PhotoDisplayView.fxml"));
+            Parent root = loader.load();
+            
+            PhotoDisplayViewController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
+            controller.setUserAlbumAndPhoto(currentUser, currentAlbum, selectedPhoto);
+            
+            primaryStage.setScene(new Scene(root));
+        } catch (IOException e) {
+            showError("Error loading photo view: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handles the back button action.
+     * Returns to the user dashboard view.
+     */
     @FXML
     private void handleBack() {
         try {
@@ -167,6 +265,11 @@ public class AlbumViewController {
         }
     }
 
+    /**
+     * Displays an error alert dialog.
+     * 
+     * @param message the error message to display
+     */
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -174,34 +277,15 @@ public class AlbumViewController {
         alert.showAndWait();
     }
     
+    /**
+     * Displays an information alert dialog.
+     * 
+     * @param message the information message to display
+     */
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-    @FXML
-private void handleViewPhoto() {
-    if (selectedPhoto == null) {
-        showError("Please select a photo to view");
-        return;
-    }
-    
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/PhotoDisplayView.fxml"));
-        Parent root = loader.load();
-        
-        PhotoDisplayViewController controller = loader.getController();
-        controller.setPrimaryStage(primaryStage);
-        controller.setUserAlbumAndPhoto(currentUser, currentAlbum, selectedPhoto);
-        
-        primaryStage.setScene(new Scene(root));
-    } catch (IOException e) {
-        showError("Error loading photo view: " + e.getMessage());
-        e.printStackTrace();
-    }
 }
-
-}
-
