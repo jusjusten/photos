@@ -5,6 +5,11 @@ import java.util.List;
 
 public class TagCriteria implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * Criteria used for tag-based search of photos.
+     *
+     * @author Justin
+     */
     
     public enum SearchType {
         SINGLE_TAG,      // One tag

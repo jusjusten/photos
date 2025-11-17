@@ -1,3 +1,6 @@
+/**
+ * @author Justin
+ */
 package photos.controller;
 
 import javafx.fxml.FXML;

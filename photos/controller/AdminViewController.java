@@ -14,6 +14,8 @@ import java.io.IOException;
 
 /**
  * Controller for the admin view
+ *
+ * @author Justin
  */
 public class AdminViewController {
 

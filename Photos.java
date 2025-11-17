@@ -12,6 +12,8 @@ import photos.controller.UserDashboardViewController;
 
 /**
  * Main application class for Photos
+ *
+ * @author Justin
  */
 public class Photos extends Application {
 

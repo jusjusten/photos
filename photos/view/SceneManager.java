@@ -8,6 +8,7 @@ import java.io.IOException;
 /**
  * Utility class for managing scene loading and switching.
  * Handles FXML loading and controller initialization.
+ * @author Justin
  */
 public class SceneManager {
     

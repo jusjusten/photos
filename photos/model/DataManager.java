@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.*;
 
 public class DataManager {
+    /**
+     * Central data manager for application (singleton)
+     *
+     * @author Justin
+     */
     private static final String DATA_DIR = "data";
     private static final String USERS_DIR = DATA_DIR + "/users";
     private static final String ADMIN_FILE = DATA_DIR + "/admin.dat";

@@ -1,3 +1,6 @@
+/**
+ * @author Justin
+ */
 package photos.model;
 
 import java.io.Serializable;

@@ -22,6 +22,7 @@ import java.io.IOException;
  * Allows users to add, remove, and view photos in the album.
  * 
  * @author Keegan Tu
+ * @author Justin
  */
 public class AlbumViewController {
 

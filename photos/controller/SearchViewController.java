@@ -24,6 +24,7 @@ import java.util.List;
  * Users can create new albums from search results.
  * 
  * @author Keegan Tu
+ * @author Justin
  */
 public class SearchViewController {
 

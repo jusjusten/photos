@@ -5,6 +5,12 @@ import java.util.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Represents a single photo file with metadata and lazy-loaded images.
+ *
+ * @author Justin
+ */
+
 
 public class Photo implements Serializable {
     private static final long serialVersionUID = 1L;

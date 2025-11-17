@@ -6,7 +6,7 @@ import java.io.File;
 
 /**
  * Helper class for JavaFX image operations
- * @author Your Name
+ * @author Justin
  */
 public class PhotoHelper {
     
