@@ -1,31 +1,107 @@
-run with 
-java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
+Project Overview
 
-right now the thing implemented is the dashboard, login, logout, rename album
+This is a Java-based photo management application that provides user accounts, albums, 
+    photo organization, tag-based searching, and persistent storage using serialization. 
+    It supports an admin account for managing users and a special immutable `stock` user 
+    for sample photos.
 
-we gotta have a way to insert into album, and look at pictures
+Architecture
 
-<<<<<<< HEAD
+- Language & UI: Java with JavaFX components for the user interface (optional at runtime 
+    if JavaFX is unavailable). The UI files and controllers live under the `main/view` and 
+    `main/controller` packages.
+- Persistence: Simple file-based serialization. User and admin data are stored under the 
+    `data/` directory as serialized `.dat` files.
 
-Get-ChildItem -Path .\out -Recurse -Include *.java -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force .\out\photos\view -ErrorAction SilentlyContinue; mkdir -Force .\out\photos\view; Copy-Item -Path .\photos\view\*.fxml -Destination .\out\photos\view -Force; javac -d out --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName }); if ($LASTEXITCODE -ne 0) { Write-Host "Compilation failed with exit code $LASTEXITCODE"; exit $LASTEXITCODE }; java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
-=======
-Finished Insert and looking at pictures in the album
->>>>>>> 754164b8e1b4814e38f126534d500e460c7f6320
+Components
 
-------Compile ----------
-Set-Location "C:\Users\Ginod\OneDrive\Desktop\Soft_meth\photos"
-Remove-Item -Recurse -Force .\out -ErrorAction SilentlyContinue
-mkdir -Force .\out
-javac -d out --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+- DataManager: Central singleton that initializes data folders, handles login/logout, 
+    switches the current user, and orchestrates loading/saving of `User` and admin state. 
+    Files used: `data/admin.dat` and `data/users/{username}.dat`.
+- User: Represents a user account. Each `User` contains a list of `Album` objects, 
+    a transient in-memory `Map` cache of `Photo` objects (keyed by file path), and tag-type 
+    definitions (`tagTypes`) with cardinality rules (single vs multiple values).
+- Album: A container for `Photo` objects with automatic tracking of its date range. 
+    Albums compare names case-insensitively.
+- Photo: Represents an image file and metadata: file path (unique id), 
+    date (from file modified time), and `List<Tag>`. Thumbnails and JavaFX `Image` objects 
+    are transient and lazily initialized to remain compatible with non-JavaFX environments.
+- Tag: Key-value metadata pair for photos with case-insensitive equality and hashing. 
+    Tag names are stored normalized (lowercase) and support single/multiple value semantics per 
+    `User` tag-type settings.
+- TagCriteria: Encodes search queries across tags and supports single tag, AND (conjunctive), 
+    and OR (disjunctive) searches.
+- Admin: Handles user creation and deletion. The `admin` account and the `stock` user are special: 
+    `admin` is used for system-level actions, and `stock` cannot be deleted or modified.
 
------copy resources-----------
-Remove-Item -Recurse -Force .\out\photos\view -ErrorAction SilentlyContinue
-mkdir -Force .\out\photos\view
-Copy-Item -Path .\photos\view\*.fxml -Destination .\out\photos\view -Force
-if (Test-Path .\data) { Remove-Item -Recurse -Force .\out\data -ErrorAction SilentlyContinue; Copy-Item -Path .\data -Destination .\out\data -Recurse -Force }
+Data Flow & Key Workflows
 
-------Run -----------
-java --module-path "lib/javafx-sdk-21.0.9/lib" --add-modules javafx.controls,javafx.fxml -cp out photos.Photos
+- Application start: `DataManager` initializes directories and loads the `admin` state. 
+    If no users exist, the app ensures `stock` is created.
+- Login: `DataManager.login(username)` verifies username (case-insensitive), and if found,
+     deserializes the corresponding `User` object into `currentUser`. Admin login is represented 
+     by `currentUser == null` and uses admin logic.
+- Adding a photo:
+	- `User.addPhoto(File, String albumName)` checks the transient `allPhotos` cache first 
+        to avoid duplicate `Photo` instances for the same file path.
+	- If the photo is new, a `Photo` object is created, its date extracted from the file's last 
+        modified timestamp, and it is cached.
+	- The `Photo` is then added to the requested `Album` and the album's date range is updated.
+- Tagging & Tag Types:
+	- `User` defines tag types with cardinality (e.g., `location` single, `person` multiple).
+	- `Photo` stores tags as a `List<Tag>`. Tag matching is case-insensitive.
+- Searching:
+	- Search by date: `User.searchByDateRange(Date start, Date end)` returns photos whose dates 
+    fall inside the inclusive range.
+	- Search by tags: `User.searchByTags(TagCriteria)` delegates to `TagCriteria.matches(Photo)` 
+    which evaluates tag conditions (single/AND/OR) in a case-insensitive manner.
+- Persistence:
+	- After changes to a `User` (e.g., adding photos, tags, or albums), call `User.saveUserData()` 
+        or `DataManager.saveCurrentUser()` to serialize the user back to `data/users/{username}.dat`.
+	- Transient fields (like thumbnails and the in-memory `Photo` cache) are restored after 
+        deserialization via custom `readObject()` logic.
 
--------or just ------
-.\build.ps1
+JavaFX Compatibility
+
+The app attempts to use JavaFX for image rendering, but `Photo` loads JavaFX classes via 
+    reflection and falls back gracefully if JavaFX is not present. The `lib/javafx-sdk-21.0.9/` 
+    folder is included in the repository to support running with JavaFX when available.
+
+Runtime / How to Run
+
+- Build and run from the repository root. Typical helper scripts in this workspace:
+
+	- Windows PowerShell build (from repository root):
+
+		`./build.ps1`
+
+	- If you're running the UI, ensure JavaFX is on the module/path 
+        (the included `lib/javafx-sdk-*/` can be used).
+
+Directory Highlights
+
+- `main/model/` : Core domain classes (`Admin.java`, `Album.java`, `DataManager.java`, 
+    `Photo.java`, `Tag.java`, `TagCriteria.java`, `User.java`).
+- `main/controller/` and `main/view/`: JavaFX controllers and FXML views.
+- `data/`: Serialized runtime data (`admin.dat`, `users/*.dat`).
+- `stock_photos/`: Example images used by `stock` user.
+
+Testing & Maintenance Notes
+
+- Serialization: Ensure transient fields restore properly — 
+    tests should serialize and deserialize `User` objects and verify thumbnails and caches 
+    are reconstructed.
+- Tag matching: Tests should assert case-insensitive behavior (e.g., `John` matches `john`).
+- Date ranges: Verify album date range updates when photos are added or removed.
+- Admin behavior: Prevent deletion or modification of `admin` and `stock` users.
+
+Extending the App
+
+- Add new tag types via `User.addTagType(String tagName, boolean isSingleValue)` before adding 
+    tags of that type.
+- To replace the UI framework, keep the model (`main/model/`) intact and swap out `main/view` 
+    and `main/controller` implementations.
+
+For more details about specific classes and methods, check the generated docs under the `docs/` folder, 
+or open the HTML docs for model classes such as `docs/photos/model/DataManager.html` and 
+`docs/photos/model/User.html`.
