@@ -39,7 +39,8 @@ public class AdminViewController {
     private ObservableList<String> usersList;
 
     /**
-     * Initializes the controller
+     * Initializes the controller and sets up the user list.
+     * Called automatically by JavaFX after FXML loading.
      */
     @FXML
     public void initialize() {
@@ -50,14 +51,16 @@ public class AdminViewController {
     }
 
     /**
-     * Sets the primary stage for scene switching
+     * Sets the primary stage for scene switching.
+     * @param primaryStage the main application stage
      */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     /**
-     * Handles create user button action
+     * Handles the create user button action.
+     * Creates a new user if the username is valid and not a duplicate.
      */
     @FXML
     private void handleCreateUser() {
@@ -89,7 +92,8 @@ public class AdminViewController {
     }
 
     /**
-     * Handles delete user button action
+     * Handles the delete user button action.
+     * Deletes the selected user if allowed.
      */
     @FXML
     private void handleDeleteUser() {
@@ -115,7 +119,8 @@ public class AdminViewController {
     }
 
     /**
-     * Handles logout button action
+     * Handles the logout button action.
+     * Returns to the login view.
      */
     @FXML
     private void handleLogout() {
@@ -127,7 +132,7 @@ public class AdminViewController {
     }
 
     /**
-     * Refreshes the users list
+     * Refreshes the users list from the admin model.
      */
     private void refreshUsersList() {
         usersList.clear();
@@ -138,7 +143,8 @@ public class AdminViewController {
     }
 
     /**
-     * Switches to login view
+     * Switches to the login view scene.
+     * @throws IOException if FXML loading fails
      */
     private void switchToLoginView() throws IOException {
         LoginViewController controller = (LoginViewController) SceneManager.loadScene(
@@ -147,7 +153,8 @@ public class AdminViewController {
     }
 
     /**
-     * Shows error message
+     * Shows an error message (console only).
+     * @param message the error message to display
      */
     private void showError(String message) {
         // You can implement a proper alert dialog here

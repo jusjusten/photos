@@ -35,7 +35,8 @@ public class LoginViewController {
     private Stage primaryStage;
 
     /**
-     * Initializes the controller
+     * Initializes the controller and sets up the data manager.
+     * Called automatically by JavaFX after FXML loading.
      */
     @FXML
     public void initialize() {
@@ -43,14 +44,16 @@ public class LoginViewController {
     }
 
     /**
-     * Sets the primary stage for scene switching
+     * Sets the primary stage for scene switching.
+     * @param primaryStage the main application stage
      */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     /**
-     * Handles login button action
+     * Handles the login button action.
+     * Validates username, creates user if needed, and switches view.
      */
     @FXML
     private void handleLogin() {
@@ -98,7 +101,8 @@ public class LoginViewController {
     }
 
     /**
-     * Handles quit button action
+     * Handles the quit button action.
+     * Saves data and closes the application.
      */
     @FXML
     private void handleQuit() {
@@ -108,7 +112,8 @@ public class LoginViewController {
     }
 
     /**
-     * Switches to admin view
+     * Switches to the admin view scene.
+     * @throws IOException if FXML loading fails
      */
     private void switchToAdminView() throws IOException {
         AdminViewController controller = (AdminViewController) SceneManager.loadScene(
@@ -117,7 +122,9 @@ public class LoginViewController {
     }
 
     /**
-     * Switches to user dashboard view
+     * Switches to the user dashboard view scene.
+     * @param user the User object to pass to dashboard
+     * @throws IOException if FXML loading fails
      */
     private void switchToUserDashboard(User user) throws IOException {
         UserDashboardViewController controller = (UserDashboardViewController) SceneManager.loadScene(
@@ -127,7 +134,9 @@ public class LoginViewController {
     }
 
     /**
-     * Shows error message
+     * Shows an error message (console only).
+     * Clears input fields and focuses username.
+     * @param message the error message to display
      */
     private void showError(String message) {
         // You can implement a proper alert dialog here

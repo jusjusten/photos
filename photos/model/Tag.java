@@ -11,20 +11,37 @@ public class Tag implements Serializable {
     private String name;
     private String value;
 
+    /**
+     * Constructs a tag with a name and value.
+     * @param name the tag name (stored lowercase)
+     * @param value the tag value
+     */
     public Tag(String name, String value) {
         this.name = name != null ? name.toLowerCase() : "";
         this.value = value != null ? value : "";
     }
 
+    /**
+     * Gets the tag name (always lowercase).
+     * @return the tag name
+     */
     public String getName() {
         return name;
     }
     
 
+    /**
+     * Gets the tag value.
+     * @return the tag value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets the tag value.
+     * @param value the new tag value
+     */
     public void setValue(String value) {
         this.value = value != null ? value : "";
     }

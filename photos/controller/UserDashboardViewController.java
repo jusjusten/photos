@@ -58,7 +58,8 @@ public class UserDashboardViewController {
     private ObservableList<String> albumsList;
 
     /**
-     * Initializes the controller
+     * Initializes the controller and sets up the albums list.
+     * Called automatically by JavaFX after FXML loading.
      */
     @FXML
     public void initialize() {
@@ -68,14 +69,16 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Sets the primary stage for scene switching
+     * Sets the primary stage for scene switching.
+     * @param primaryStage the main application stage
      */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     /**
-     * Sets the current user and updates the UI
+     * Sets the current user and updates the UI.
+     * @param user the User object to display
      */
     public void setCurrentUser(User user) {
         this.currentUser = user;
@@ -83,7 +86,7 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Updates the UI with current user data
+     * Updates the UI with current user data (welcome label, albums list).
      */
     private void updateUI() {
         if (currentUser != null) {
@@ -93,7 +96,8 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Handles create album button action
+     * Handles the create album button action.
+     * Creates a new album if the name is valid and not a duplicate.
      */
     @FXML
     private void handleCreateAlbum() {
@@ -120,7 +124,8 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Handles delete album button action
+     * Handles the delete album button action.
+     * Deletes the selected album if allowed.
      */
     @FXML
     private void handleDeleteAlbum() {
@@ -141,7 +146,8 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Handles rename album button action
+     * Handles the rename album button action.
+     * Renames the selected album if the new name is valid and not a duplicate.
      */
     @FXML
     private void handleRenameAlbum() {
@@ -174,7 +180,8 @@ public class UserDashboardViewController {
     }
 
     /**
-     * Handles open album button action
+     * Handles the open album button action.
+     * Opens the selected album in a new view.
      */
     @FXML
     private void handleOpenAlbum() {
@@ -203,7 +210,8 @@ public class UserDashboardViewController {
 }
 
     /**
-     * Handles search button action
+     * Handles the search button action.
+     * Opens the search view for the current user.
      */
     @FXML
 private void handleSearch() {
@@ -223,7 +231,8 @@ private void handleSearch() {
 }
 
     /**
-     * Handles logout button action
+     * Handles the logout button action.
+     * Logs out the user and returns to the login view.
      */
     @FXML
     private void handleLogout() {
@@ -237,7 +246,7 @@ private void handleSearch() {
     }
 
     /**
-     * Refreshes the albums list
+     * Refreshes the albums list from the user model.
      */
     private void refreshAlbumsList() {
         albumsList.clear();
@@ -249,7 +258,8 @@ private void handleSearch() {
     }
 
     /**
-     * Switches to login view
+     * Switches to the login view scene.
+     * @throws IOException if FXML loading fails
      */
     private void switchToLoginView() throws IOException {
         LoginViewController controller = (LoginViewController) SceneManager.loadScene(
@@ -258,7 +268,8 @@ private void handleSearch() {
     }
 
     /**
-     * Shows error message
+     * Shows an error message (console only).
+     * @param message the error message to display
      */
     private void showError(String message) {
         // You can implement a proper alert dialog here

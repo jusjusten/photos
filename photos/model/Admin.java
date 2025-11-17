@@ -23,7 +23,11 @@ public class Admin implements Serializable {
         }
     }
     
-    // Creates a new user and returns true if successful and false if user already exists
+    /**
+     * Creates a new user account and persists it to disk.
+     * @param username the username to create (must not be null, empty, or 'admin')
+     * @return true if user was created, false if user exists or invalid
+     */
     public boolean createUser(String username) {
         if (username == null || username.trim().isEmpty()) {
             return false;
@@ -52,7 +56,11 @@ public class Admin implements Serializable {
         return true;
     }
     
-    // Deletes a user and returns true if successful and false if user does not exist or unable to delete
+    /**
+     * Deletes a user account and removes its data file.
+     * @param username the username to delete (must not be null, empty, 'admin', or 'stock')
+     * @return true if user was deleted, false if not found or invalid
+     */
     public boolean deleteUser(String username) {
         if (username == null || username.trim().isEmpty()) {
             return false;
@@ -80,13 +88,20 @@ public class Admin implements Serializable {
         return removed;
     }
     
-    // List all usernames
+    /**
+     * Lists all usernames managed by the admin.
+     * @return a copy of the usernames list
+     */
     public List<String> listUsers() {
         // Return copy to prevent external modification
         return new ArrayList<>(usernames);
     }
     
-    // returns true if user exists, false otherwise
+    /**
+     * Checks if a user exists by username (case-insensitive).
+     * @param username the username to check
+     * @return true if user exists, false otherwise
+     */
     public boolean userExists(String username) {
         for (String existingUser : usernames) {
             if (existingUser.equalsIgnoreCase(username)) {
