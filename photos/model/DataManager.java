@@ -114,7 +114,7 @@ public class DataManager {
     /**
      * Loads all users from disk.
      * Reads all .dat files in the users directory and deserializes them.
-     * Ensures admin user exists in the list.
+     * Ensures admin user exists in the list and stock user has photos loaded.
      */
     private void loadAllUsers() {
         users = new ArrayList<>();
@@ -129,6 +129,11 @@ public class DataManager {
                     User user = User.loadUserData(username);
                     if (user != null) {
                         users.add(user);
+                        
+                        // Ensure stock user has its album and photos loaded
+                        if (username.equalsIgnoreCase(Admin.getStockUsername())) {
+                            ensureStockUserPhotos(user);
+                        }
                     }
                 }
             }
@@ -139,6 +144,35 @@ public class DataManager {
             User adminUser = new User("admin");
             users.add(adminUser);
         }
+    }
+    
+    /**
+     * Ensures the stock user has the stock album and photos loaded.
+     * Creates the stock album if it doesn't exist and populates it with photos.
+     * 
+     * @param stockUser the stock user to configure
+     */
+    private void ensureStockUserPhotos(User stockUser) {
+        // Create stock album if it doesn't exist
+        if (stockUser.getAlbum("stock") == null) {
+            stockUser.createAlbum("stock");
+        }
+        
+        // Load photos from stock_photos directory
+        File stockPhotoDir = new File("stock_photos");
+        if (stockPhotoDir.exists() && stockPhotoDir.isDirectory()) {
+            File[] photoFiles = stockPhotoDir.listFiles();
+            if (photoFiles != null) {
+                for (File photoFile : photoFiles) {
+                    if (isImageFile(photoFile)) {
+                        stockUser.addPhoto(photoFile, "stock");
+                    }
+                }
+            }
+        }
+        
+        // Save the updated stock user
+        stockUser.saveUserData();
     }
     
     /**
@@ -238,6 +272,7 @@ public class DataManager {
      * Initializes the stock user with pre-loaded photos.
      * Creates a stock user with a stock album for testing purposes.
      * This user is created on first run of the application.
+     * Loads photos from the stock_photos directory if it exists.
      */
     private void initializeStockUser() {
         User stockUser = new User(Admin.getStockUsername());
@@ -245,19 +280,38 @@ public class DataManager {
         // Create stock album
         stockUser.createAlbum("stock");
         
-        // TODO: Add your stock photos here
-        // Example:
-        // File stockPhotoDir = new File("stock_photos");
-        // if (stockPhotoDir.exists() && stockPhotoDir.isDirectory()) {
-        //     for (File photoFile : stockPhotoDir.listFiles()) {
-        //         if (isImageFile(photoFile)) {
-        //             stockUser.addPhoto(photoFile, "stock");
-        //         }
-        //     }
-        // }
+        // Load stock photos from stock_photos directory
+        File stockPhotoDir = new File("stock_photos");
+        if (stockPhotoDir.exists() && stockPhotoDir.isDirectory()) {
+            File[] photoFiles = stockPhotoDir.listFiles();
+            if (photoFiles != null) {
+                for (File photoFile : photoFiles) {
+                    if (isImageFile(photoFile)) {
+                        stockUser.addPhoto(photoFile, "stock");
+                    }
+                }
+            }
+        }
         
         stockUser.saveUserData();
         users.add(stockUser);
+    }
+    
+    /**
+     * Helper method to check if a file is an image file.
+     * Supports common image formats: jpg, jpeg, png, gif, bmp.
+     * 
+     * @param file the file to check
+     * @return true if the file is a recognized image format, false otherwise
+     */
+    private boolean isImageFile(File file) {
+        if (!file.isFile()) {
+            return false;
+        }
+        String name = file.getName().toLowerCase();
+        return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
+               name.endsWith(".png") || name.endsWith(".gif") || 
+               name.endsWith(".bmp");
     }
     
     /**
