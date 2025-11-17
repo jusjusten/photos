@@ -122,14 +122,19 @@ private void handleLogin() {
     }
 
     /**
-     * Shows an error message (console only).
-     * Clears input fields and focuses username.
+     * Displays an error alert dialog.
+     * Clears input fields and refocuses the username field after the alert is dismissed.
+     * 
      * @param message the error message to display
      */
     private void showError(String message) {
-        // You can implement a proper alert dialog here
-        System.err.println("Error: " + message);
-        // For now, just clear the fields
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Login Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+        
+        // Clear fields after showing error
         usernameField.clear();
         passwordField.clear();
         usernameField.requestFocus();
