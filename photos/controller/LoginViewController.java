@@ -56,49 +56,37 @@ public class LoginViewController {
      * Validates username, creates user if needed, and switches view.
      */
     @FXML
-    private void handleLogin() {
-        String username = usernameField.getText().trim();
-        
-        if (username.isEmpty()) {
-            showError("Username cannot be empty");
-            return;
-        }
-        
-        Admin admin = dataManager.getAdmin();
+private void handleLogin() {
+    String username = usernameField.getText().trim();
+    
+    if (username.isEmpty()) {
+        showError("Username cannot be empty");
+        return;
+    }
+    
+    boolean loggedIn = dataManager.login(username);
+    if (!loggedIn) {
+        showError("User not found. Please contact admin to create an account.");
+        return;
+    }
 
-        // If user doesn't exist in admin list, create it first
-        if (!username.equalsIgnoreCase(Admin.getAdminUsername()) &&
-            !admin.userExists(username)) {
-            boolean created = admin.createUser(username);
-            if (!created) {
-                showError("Failed to create user");
-                return;
-            }
-            dataManager.saveAdmin();
+    // If admin is logged in
+    if (dataManager.isAdminLoggedIn()) {
+        try {
+            switchToAdminView();
+        } catch (IOException e) {
+            showError("Error loading admin view: " + e.getMessage());
         }
-
-        boolean loggedIn = dataManager.login(username);
-        if (!loggedIn) {
-            showError("Login failed: user does not exist");
-            return;
-        }
-
-        // If admin is logged in, DataManager sets currentUser to null
-        if (dataManager.isAdminLoggedIn()) {
-            try {
-                switchToAdminView();
-            } catch (IOException e) {
-                showError("Error loading admin view: " + e.getMessage());
-            }
-        } else {
-            User user = dataManager.getCurrentUser();
-            try {
-                switchToUserDashboard(user);
-            } catch (IOException e) {
-                showError("Error loading user dashboard: " + e.getMessage());
-            }
+    } else {
+        // Regular user logged in
+        User user = dataManager.getCurrentUser();
+        try {
+            switchToUserDashboard(user);
+        } catch (IOException e) {
+            showError("Error loading user dashboard: " + e.getMessage());
         }
     }
+}
 
     /**
      * Handles the quit button action.
